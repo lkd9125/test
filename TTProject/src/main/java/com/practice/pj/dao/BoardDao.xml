@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.practice.pj.dao.BoardDao">
+
+<insert id="BoardInsert"
+parameterType="com.practice.pj.dto.BoardDto"
+useGeneratedKeys="true"
+keyProperty="b_num">
+
+<selectKey
+keyProperty="b_num" 
+resultType="Integer"
+order="AFTER">
+			SELECT LAST_INSERT_ID()
+</selectKey>
+	insert into board values(null, #{b_title}, #{b_contents}, #{b_id}, default)
+</insert>
+
+<insert id="BoardFileInsert"
+parameterType="com.practice.pj.dto.FileDto">
+	insert into boardfile values(null, #{bf_num}, #{f_oriname}, #{f_sysname})
+</insert>
+
+<select id="getList"
+parameterType="com.practice.pj.dto.ListDto"
+resultType="com.practice.pj.dto.BoardDto">
+select * from board
+	<if test="colname != null and colname != ''">
+		WHERE ${colname} LIKE concat('%',#{keyword},'%')
+	</if>
+limit #{pageNum},#{listCnt}
+</select>
+
+<select id="SelectCount"
+	parameterType="com.practice.pj.dto.ListDto"
+	resultType="int">
+	SELECT count(*) FROM board
+	<if test="colname != null and colname != ''">
+	WHERE ${colname} LIKE concat('%',#{keyword},'%')
+	</if>
+</select>
+
+<select id="getContents"
+parameterType="Integer"
+resultType="com.practice.pj.dto.BoardDto">
+select * from board where b_num=#{bnum}
+</select>
+
+<select id="getFile"
+parameterType="Integer"
+resultType="com.practice.pj.dto.FileDto">
+select * from boardfile where bf_num=#{bnum}
+</select>
+
+<update id="UPviews"
+parameterType="com.practice.pj.dto.BoardDto">
+update board set b_views = #{b_views} where b_num = #{b_num}
+</update>
+
+<insert id="CommentInsert"
+parameterType="com.practice.pj.dto.CommentDto">
+insert into comment values (null,#{cb_num},#{c_contents},default,#{c_id})
+</insert>
+
+<select id="getComment"
+parameterType="Integer"
+resultType="com.practice.pj.dto.CommentDto">
+select * from comment where cb_num = #{bnum}
+</select>
+
+<delete id="delFile"
+parameterType="String">
+delete from boardfile where f_sysname = #{sysname}
+</delete>
+
+<update id="boardUpdate"
+	parameterType="com.practice.pj.dto.BoardDto">
+	UPDATE board SET b_title=#{b_title}, b_contents = #{b_contents} WHERE b_num = #{b_num}
+</update>
+
+<delete id="deleteBoard"
+	parameterType="Integer">
+	DELETE FROM board WHERE b_num = #{bnum}
+</delete>
+	
+<delete id="deleteBoardFile"
+	parameterType="Integer">
+	delete from boardfile where bf_num = #{bnum}	
+</delete>
+
+<delete id="deleteComment"
+	parameterType="Integer">
+	DELETE FROM comment WHERE cb_num = #{bnum}
+</delete>
+
+</mapper>

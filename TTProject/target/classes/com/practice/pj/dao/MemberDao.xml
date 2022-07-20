@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.practice.pj.dao.MemberDao">
+<insert id="MInsert"
+parameterType="com.practice.pj.dto.MemberDto">
+insert into member values(#{m_id},#{m_pwd},#{m_name},default)
+</insert>
+
+<select id="login"
+parameterType="String"
+resultType="com.practice.pj.dto.MemberDto">
+select * from minfo where m_id=#{m_id}
+</select>
+
+<select id="idcheck"
+parameterType="String"
+resultType="Integer">
+select count(*) from member where m_id = #{m_id}
+</select>
+
+<update id="UPpoint"
+parameterType="com.practice.pj.dto.MemberDto">
+update member set m_point=#{m_point} where m_id = #{m_id}
+</update>
+
+</mapper>
